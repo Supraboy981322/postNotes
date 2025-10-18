@@ -1,0 +1,61 @@
+:root {
+    background-color: black;
+    color:white;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    z-index: 0;
+    margin: 0;
+    padding: 0;
+/*  overflow: hidden;*/
+}
+
+.topBar {
+    z-index: 1;
+    width: 100%;
+    padding: 0.3em 0.4em;
+    background-color: blue;
+    height: 1.445em;
+        input {
+        height: 1.75em;
+        color: white;
+        padding: 0em 0.6em;
+        z-index: 1;
+        display: inline-block;
+        background-color: black;
+        border: none;
+        border-radius: 0.5em;
+        width: 80%;
+    }
+}
+
+.note {
+    background-color: wheat;
+    border-radius: 0.5em 1em 0.5em 0.7em;
+    width: 10em !important;
+    height: 10em;
+    color: black;
+    padding: 0em;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    content {
+        color: black;
+    }
+}
+
+/* Top-right fold */
+.note::before {
+  content: '';
+  position: absolute;
+  margin-left: 8.9em;
+  width: 1em;       /* size of fold */
+  height: 1em;
+  background: #fff;  /* color of the “back” of paper */
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transform: rotate(270deg);
+  box-shadow: -2px 2px 3px rgba(0,0,0,0.2);
+  filter: shadow(2em 2em);
+}

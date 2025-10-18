@@ -1,0 +1,69 @@
+[
+ {
+  "category": "notes",
+  "shorthands": [
+   "n",
+   "note",
+   "notes"
+  ],
+  "webhook": [
+	"",
+	"",
+	""
+  ]
+ },
+ {
+  "category": "ideas",
+  "shorthands": [
+   "i",
+   "idea",
+   "ideas"
+  ],
+  "webhook": [
+	"",
+	"",
+	""
+  ]
+ },
+ {
+  "category": "misc.",
+  "shorthands": [
+   "m",
+   "misclaneous",
+   "misc",
+   "misc."
+  ],
+  "webhook": [
+	"",
+	"",
+	""
+  ]
+ },
+ {
+  "category": "to-do",
+  "shorthands": [
+   "t",
+   "todo",
+   "to-do"
+  ],
+  "webhook": [
+	"",
+	"",
+	""
+  ]
+ },
+ {
+  "category": "reminders",
+  "shorthands": [
+   "r",
+   "remind",
+   "reminder",
+   "reminders"
+  ],
+  "webhook": [
+	"",
+	"",
+	""
+  ]
+ }
+]
