@@ -12,7 +12,7 @@ import (                         //import packages
 )
 
 const (                            //global const
-	version string = "v.0.75.6"    //  client version
+	version string = "v.0.76.0"    //  client version
 	blue string = "\033[0;34m"     //  for term color blue
 	green string = "\033[0;32m"    //  for term color green
 	red string = "\033[0;31m"      //  for term color red
@@ -130,11 +130,13 @@ func readConf() error {                                          //read config
 		return fmt.Errorf("err reading conf.toml:  %v\n", err)   //      return it
 	}                                                            //
                                                                  //
-	if conf.Address != "" {                                      //  if the address is not blank...
-		url = conf.Address                                       //    use it
+	if conf.Server.Address != "" {                               //  if the address is not blank...
+		url = conf.Server.Address                                //    use it
 	} else {                                                     //    otherwise...
 		return fmt.Errorf("please set server address")           //      return as an error
-	}
+	}                                                            //
+	                                                             //
+	return nil                                                   //  presumed to have not had any problems
 }
 
 func printHelp() {                                                  //```help
