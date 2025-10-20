@@ -18,6 +18,7 @@ A simple notes and tasks server, tui, and web ui (with an potential mobile app p
 <p><code>[r]</code> = started, returning later</p>
 <p><code>[w]</code> = working, but needs refining</p>
 <p><code>[u]</code> = "uhhh... well that's a strange bug, I'll come back to this later"</p>
+
 ~~------------------~~ ***`roadmap`*** ~~------------------~~
 
 <p><code>v.0.01.0 [/] receive post requests</code></p>
