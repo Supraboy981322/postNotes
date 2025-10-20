@@ -7,6 +7,7 @@ import (                         //import packages
 	"net/http"                   //  networking over http
 	"time"                       //  time (clearly)
 	"strings"                    //  ever-so-slightly more advanced string manipulation
+	"path/filepath"              //  used to get the path of executable
 	                             //
 	"github.com/BurntSushi/toml" //  for reading toml config file
 )
@@ -124,8 +125,16 @@ func sendNote() error {                                     //send a note
 }
 
 func readConf() error {                                          //read config
+	execPath, err := os.Executable()                             //  get the path of pN
+	if err != nil {                                              //    if there was a problem...
+		return fmt.Errorf("err getting exec path", err)          //      return it
+	}                                                            //
+	                                                             //
+	execDir := filepath.Dir(execPath)                            //  get the directory of from path
+	confFile := filepath.Join(execDir, "conf.toml")              //  construct path to the `conf.toml`
+                                                                 //
 	var conf Conf                                                //  create `conf` var
-	_, err := toml.DecodeFile("conf.toml", &conf)                //  read the file
+	_, err = toml.DecodeFile(confFile, &conf)                    //  read the file
 	if err != nil {                                              //    if there was a problem...
 		return fmt.Errorf("err reading conf.toml:  %v\n", err)   //      return it
 	}                                                            //
