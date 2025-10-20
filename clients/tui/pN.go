@@ -62,8 +62,8 @@ func main() {
 		printHelp()                        //  print the help arg
 	}                                      //
 	                                       //
-	params := []string{cat, tag, data}     //create list of the note's parameters
-	for _, arg := range params {           //iterate through all parameters
+	parameters := []string{cat, tag, data} //create list of the note's parameters
+	for _, arg := range parameters {       //iterate through all parameters
 		if arg != "" {                     //  if the arg exists (will update to a real validity check)...
 			check = append(check, true)    //    note that it's valid
 		} else {                           //  otherwise...
