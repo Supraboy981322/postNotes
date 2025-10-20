@@ -10,7 +10,7 @@ import (       //import packages
 )
 
 const (                            //global const
-	version string = "v.0.75.2"    //  for client version
+	version string = "v.0.75.3"    //  client version
 	blue string = "\033[0;34m"     //  for term color blue
 	green string = "\033[0;32m"    //  for term color green
 	red string = "\033[0;31m"      //  for term color red
