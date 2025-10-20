@@ -1,16 +1,18 @@
 package main   //primary script in postNotes tui client
 
-import (       //import packages
-	"fmt"      //  formatted I/O
-	"os"       //  os interfacing
-	"slices"   //  for slices (clearly)
-	"net/http" //  networking over http
-	"time"     //  time (clearly)
-	"strings"  //  ever-so-slightly more advanced string manipulation
+import (                         //import packages
+	"fmt"                        //  formatted I/O
+	"os"                         //  os interfacing
+	"slices"                     //  for slices (clearly)
+	"net/http"                   //  networking over http
+	"time"                       //  time (clearly)
+	"strings"                    //  ever-so-slightly more advanced string manipulation
+	                             //
+	"github.com/BurntSushi/toml" //  for reading toml config file
 )
 
 const (                            //global const
-	version string = "v.0.75.3"    //  client version
+	version string = "v.0.75.6"    //  client version
 	blue string = "\033[0;34m"     //  for term color blue
 	green string = "\033[0;32m"    //  for term color green
 	red string = "\033[0;31m"      //  for term color red
@@ -23,6 +25,7 @@ const (                            //global const
 )
 
 var (                            //global vars
+	url string                   //  for address of server
 	cat string                   //  for category arg
 	tag string                   //  for tag arg
 	data string                  //  for data arg
@@ -30,7 +33,22 @@ var (                            //global vars
 	args []string = os.Args[1:]  //  the args passed
 )
 
+type (
+	ServerConf struct {
+		Server string `toml:"server"`
+		Address string `toml:"address"`
+	}
+	Conf struct {
+		Server ServerConf
+	}
+)
+
 func main() {
+	err := readConf()                      //read config
+	if err != nil {                        //  if there was a problem...
+		fmt.Println(err)                   //    print it
+	}                                      //
+                                           //
 	var used []int                         //used later to keep track of which args are already checked/used
 	var check []bool                       //used later to check if all necessary args are valid
 	for i := 0; i < len(args); i++ {       //iterate through all args
@@ -87,7 +105,7 @@ func sendNote() error {                                     //send a note
 	}                                                       //
 	                                                        //
 	request, err := http.NewRequest(                        //  create the request 
-		"POST", "[redacted url]",                           //    set to POST and use provided url
+		"POST", fmt.Sprintf("%s/post", url),                //    set to POST and use provided url
 		strings.NewReader(data))                            //    use the data param as the body 
 	if err != nil {                                         //    if there is a problem...
 		return fmt.Errorf("err creating http request", err) //      return it
@@ -103,6 +121,20 @@ func sendNote() error {                                     //send a note
 	}                                                       //
 	defer response.Body.Close()                             //  close the body
 	return nil                                              //  presumed to not have had any problems
+}
+
+func readConf() error {                                          //read config
+	var conf Conf                                                //  create `conf` var
+	_, err := toml.DecodeFile("conf.toml", &conf)                //  read the file
+	if err != nil {                                              //    if there was a problem...
+		return fmt.Errorf("err reading conf.toml:  %v\n", err)   //      return it
+	}                                                            //
+                                                                 //
+	if conf.Address != "" {                                      //  if the address is not blank...
+		url = conf.Address                                       //    use it
+	} else {                                                     //    otherwise...
+		return fmt.Errorf("please set server address")           //      return as an error
+	}
 }
 
 func printHelp() {                                                  //```help
