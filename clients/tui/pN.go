@@ -10,7 +10,7 @@ import (       //import packages
 )
 
 const (                            //global const
-	version string = "v.0.75.1"    //  for client version
+	version string = "v.0.75.2"    //  for client version
 	blue string = "\033[0;34m"     //  for term color blue
 	green string = "\033[0;32m"    //  for term color green
 	red string = "\033[0;31m"      //  for term color red
@@ -62,7 +62,7 @@ func main() {
 		printHelp()                        //  print the help arg
 	}                                      //
 	                                       //
-	params []string = {cat, tag, data}     //create list of the note's parameters
+	params := []string{cat, tag, data}     //create list of the note's parameters
 	for _, arg := range params {           //iterate through all parameters
 		if arg != "" {                     //  if the arg exists (will update to a real validity check)...
 			check = append(check, true)    //    note that it's valid
