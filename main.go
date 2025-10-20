@@ -121,14 +121,14 @@ func webPageHandler(w http.ResponseWriter, r *http.Request) {
     var webpageFileName string
     if requestedPage == "/script.js" {
         w.Header().Set("Content-Type", "text/javascript")
-        webpageFileName = "web/script.js"
+        webpageFileName = "clients/web/script.js"
     } else if requestedPage == "/notes.json" {
         webpageFileName = "notes.json"        
     } else if requestedPage == "/main.css" {
         w.Header().Set("Content-Type", "text/css")
-        webpageFileName = "web/main.css"
+        webpageFileName = "clients/web/main.css"
     } else {
-        webpageFileName = "web/index.html"
+        webpageFileName = "clients/web/index.html"
     }
     
     //read the file's contents
