@@ -21,7 +21,7 @@ const (                            //global const
 	yellow string = "\033[0;33m"   //  for term color yellow
 	black string = "\033[0;30m"    //  for term color black
 	cyan string = "\033[0;36m"     //  for term color cyan
-	grey string = "\033[1;30m"     //  for term color grey
+	grey string = "\033[0;30m"     //  for term color grey
 	coff string = "\033[0m"        //  to clear term color
 )
 
@@ -45,11 +45,6 @@ type (
 )
 
 func main() {
-	err := readConf()                      //read config
-	if err != nil {                        //  if there was a problem...
-		fmt.Println(err)                   //    print it
-	}                                      //
-                                           //
 	var used []int                         //used later to keep track of which args are already checked/used
 	var check []bool                       //used later to check if all necessary args are valid
 	for i := 0; i < len(args); i++ {       //iterate through all args
@@ -78,7 +73,12 @@ func main() {
 	}                                      //
                                            //
 	if help {                              //if the help arg has been passed...
-		printHelp()                        //  print the help arg
+		printHelp()                        //  print the help message
+	}                                      //
+	                                       //
+	err := readConf()                      //read config
+	if err != nil {                        //  if there was a problem...
+		fmt.Println(err)                   //    print it
 	}                                      //
 	                                       //
 	parameters := []string{cat, tag, data} //create list of the note's parameters
@@ -150,17 +150,17 @@ func readConf() error {                                          //read config
 
 func printHelp() {                                                  //```help
 	fmt.Printf("%susage:%s\n", cyan, coff)                          //usage:\n
-	fmt.Printf("%s  %scategory:%s\n", grey, yellow, coff)           //  category:\n
-	fmt.Printf("%s    %s`%s-c%s`,", grey, coff, yellow, coff)       //    `-c`,
+	fmt.Printf("%s..%scategory:%s\n", grey, yellow, coff)           //  category:\n
+	fmt.Printf("%s....%s`%s-c%s`,", grey, coff, yellow, coff)       //    `-c`,
 	fmt.Printf("%s %s`%s--cat%s`,", grey, coff, yellow, coff)       //    `--cat`,
 	fmt.Printf("%s %s`%s--category%s`\n", grey, coff, yellow, coff) //    `--category`\n
-	fmt.Printf("%s  %stag:%s\n", grey, green, coff)                 //  tag:\n
-	fmt.Printf("%s    %s`%s-t%s`,", grey, coff, green, coff)        //    `-t`,
+	fmt.Printf("%s..%stag:%s\n", grey, green, coff)                 //  tag:\n
+	fmt.Printf("%s....%s`%s-t%s`,", grey, coff, green, coff)        //    `-t`,
 	fmt.Printf("%s %s`%s--tag%s`\n", grey, coff, green, coff)       //    `--tag`\n
-	fmt.Printf("%s  %shelp:%s\n", grey, purple, coff)               //  help:\n
-	fmt.Printf("%s    %s`%s-h%s`,", grey, coff, purple, coff)       //    `-h`,
-	fmt.Printf("%s  %s`%s--help%s`\n", grey, coff, purple, coff)    //    `--help`\n
-	fmt.Printf("%s  %sversion:%s\n", grey, red, coff)               //  version:
-	fmt.Printf("%s    %s`%s-v%s`,", grey, coff, red, coff)          //    `-v`,
-	fmt.Printf("%s  %s`%s--version%s`\n", grey, coff, red, coff)    //    `--version`\n
+	fmt.Printf("%s..%shelp:%s\n", grey, purple, coff)               //  help:\n
+	fmt.Printf("%s....%s`%s-h%s`,", grey, coff, purple, coff)       //    `-h`,
+	fmt.Printf("%s %s`%s--help%s`\n", grey, coff, purple, coff)    //    `--help`\n
+	fmt.Printf("%s..%sversion:%s\n", grey, red, coff)               //  version:
+	fmt.Printf("%s....%s`%s-v%s`,", grey, coff, red, coff)          //    `-v`,
+	fmt.Printf("%s %s`%s--version%s`\n", grey, coff, red, coff)    //    `--version`\n
 }                                                                   //```
