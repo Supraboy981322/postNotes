@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	version string = "v.0.75.0"
+	version string = "v.0.75.1"
 	blue string = "\033[0;34m"
 	green string = "\033[0;32m"
 	red string = "\033[0;31m"
@@ -43,7 +43,7 @@ func main() {
 			tag = args[i+1]
 			used = append(used, i, i+1)
 			break
-		case "-v", "--version":
+		case "-v", "--version": //version arg
 			fmt.Println(version)
 			used = append(used, i)
 			break
@@ -51,7 +51,7 @@ func main() {
 			help = true
 			used = append(used, i)
 			break
-		default:
+		default: //presumed to be the data arg
 			if !slices.Contains(used, i) {
 				data = args[i]
 			}
@@ -73,7 +73,7 @@ func main() {
 		if err := sendNote(); err != nil {
 			fmt.Println(err)
 		}
-	} else {
+	} else if !help {
 		fmt.Println("not enough args")
 		printHelp()
 	}
