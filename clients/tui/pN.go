@@ -2,6 +2,7 @@ package main   //primary script in postNotes tui client
 
 import (                         //import packages
 	"fmt"                        //  formatted I/O
+	"io"
 	"os"                         //  os interfacing
 	"slices"                     //  for slices (clearly)
 	"net/http"                   //  networking over http
@@ -121,17 +122,25 @@ func sendNote() error {                                     //send a note
 		return fmt.Errorf("err sending http request", err)  //      return it
 	}                                                       //
 	defer response.Body.Close()                             //  close the body
+	respBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("cat:  %s\n", cat)
+	fmt.Printf("tag:  %s\n", tag)
+	fmt.Printf("bod:  %s\n", data)
+	fmt.Println(string(respBody))
 	return nil                                              //  presumed to not have had any problems
 }
 
 func readConf() error {                                          //read config
-	execPath, err := os.Executable()                             //  get the path of pN
+	homeDir, err := os.UserHomeDir()                             //  get the path of pN
 	if err != nil {                                              //    if there was a problem...
-		return fmt.Errorf("err getting exec path", err)          //      return it
+		return fmt.Errorf("err getting home dir", err)          //      return it
 	}                                                            //
 	                                                             //
-	execDir := filepath.Dir(execPath)                            //  get the directory of from path
-	confFile := filepath.Join(execDir, "conf.toml")              //  construct path to the `conf.toml`
+	confPath := filepath.Join(homeDir, ".config/Supraboy981322/postNotes")
+	confFile := filepath.Join(confPath, "conf.toml")              //  construct path to the `conf.toml`
                                                                  //
 	var conf Conf                                                //  create `conf` var
 	_, err = toml.DecodeFile(confFile, &conf)                    //  read the file
