@@ -43,6 +43,7 @@ func config() {
 		log.Debug("read categories")
 		log.Debug("mapping categories")
 		catsMapBuilt := make(map[string]map[string][]string)
+		catsAltMapBuilt := make(map[string]int)
 		if catsMap, ok := catsRaw.(gomn.Map); ok {
 			for cat, stuffRaw := range catsMap {
 				var aliases, webhooks []string
@@ -85,7 +86,9 @@ func config() {
 				catMap["webhooks"] = webhooks
 				catsMapBuilt[catName] = catMap
 
-			}; cats = catsMapBuilt
+				//for webhook tracking later
+				catsAltMapBuilt[catName] = 0
+			}; cats = catsMapBuilt; lastUsedWebhooks = catsAltMapBuilt
 		} else { log.Fatal("failed to parse category map") }
 	}
 }
