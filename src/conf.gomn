@@ -1,0 +1,65 @@
+["port"] := 6502
+["log level"] := "debug"
+["categories"] := |
+  ["homework"] := |
+    ["aliases"] := {
+      "hw", "home", "h",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+  ["ideas"] := |
+    ["aliases"] := {
+      "i", "idea",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+  ["reminders"] := |
+    ["aliases"] := {
+      "reminder", "r", "remind", "remindme",
+      "remind me", "remind-me",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+  ["notes"] := |
+    ["aliases"] := {
+      "n", "note",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+  ["todo"] := |
+    ["aliases"] := {
+      "t", "to-do",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+  ["misc"] := |
+    ["aliases"] := {
+      "m", "miscellaneous",
+    }
+    ["webhooks"] := {
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here",
+      "discord compatible webhook goes here"
+    }
+  |
+|

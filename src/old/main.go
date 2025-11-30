@@ -18,19 +18,22 @@ import (
 //    "github.com/go-co-op/gocron/v2"
 )
 
-type noteStruct struct {
+type (
+	noteStruct struct {
     NOTEtag []string `json:"tag"`
     NOTEcategory string `json:"category"`
     NOTEtext string `json:"text"`
-}
-
-type categoryStruct struct {
+	}
+	categoryStruct struct {
     CATEGORYname string `json:"category"`
     CATEGORYshorthands []string `json:"shorthands"`
     CATEGORYwebhooks []string `json:"webhook"`
-}
+	}
+)
 
-var categories []categoryStruct
+var (
+	categories []categoryStruct
+)
 //var scheduler gocron.NewScheduler
 
 
@@ -233,12 +236,12 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
         }
         return notes[i].NOTEcategory < notes[j].NOTEcategory
     })
-    for _, note := range notes {
-        fmt.Fprintf(w, "category:  %s\n", note.NOTEcategory)
-        fmt.Fprintf(w, "..tag:       %s\n", note.NOTEtag)
-        fmt.Fprintf(w, "....content:   %s\n", note.NOTEtext)
-        fmt.Fprintf(w, "\n")
-    }
+	for _, note := range notes {
+    fmt.Fprintf(w, "category:  %s\n", note.NOTEcategory)
+    fmt.Fprintf(w, "..tag:       %s\n", note.NOTEtag)
+    fmt.Fprintf(w, "....content:   %s\n", note.NOTEtext)
+  	fmt.Fprintf(w, "\n")
+  }
 }
 
 
@@ -246,39 +249,39 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
 /*  get webhooks from json  */
 /****************************/
 func getWebhook(category string, which int) string {
-    //get the webhook categories.json file contents
-    categoriesJSONbyte, err := ioutil.ReadFile("categories.json")
-    if err != nil {
-        log.Fatalf("err reading categories.json:  ", err)
-    }
+  //get the webhook categories.json file contents
+  categoriesJSONbyte, err := ioutil.ReadFile("categories.json")
+  if err != nil {
+  	log.Fatalf("err reading categories.json:  ", err)
+  }
 
-    //convert byte[] to string
-    categoriesJSON := string(categoriesJSONbyte)
+  //convert byte[] to string
+  categoriesJSON := string(categoriesJSONbyte)
     
-    index := -1
-    gjson.Parse(categoriesJSON).ForEach(func(i, v gjson.Result) bool {
-        if v.Get("category").String() == category {
-            //get the index
-            index = int(i.Int())
+  index := -1
+  gjson.Parse(categoriesJSON).ForEach(func(i, v gjson.Result) bool {
+    if v.Get("category").String() == category {
+      //get the index
+      index = int(i.Int())
 
-            //exit current iteration of loop
-            return false
-        }
-        //move to next iteration of loop
-        return true
-    })
-
-    if index != -1 {
-        webhookPath := fmt.Sprintf("%d.webhook.%d", index, which)
-
-        fmt.Printf("webhookPath: %s\n", webhookPath)
-        webhook := gjson.Get(categoriesJSON, webhookPath).String()
-        
-        //return the webhook
-        return webhook
-    } else {
-        return " "
+      //exit current iteration of loop
+    	return false
     }
+    //move to next iteration of loop
+    return true
+  })
+
+  if index != -1 {
+    webhookPath := fmt.Sprintf("%d.webhook.%d", index, which)
+
+    fmt.Printf("webhookPath: %s\n", webhookPath)
+    webhook := gjson.Get(categoriesJSON, webhookPath).String()
+        
+    //return the webhook
+  	return webhook
+  } else {
+  	return " "
+  }
 }
 
 
@@ -287,41 +290,41 @@ func getWebhook(category string, which int) string {
 /*      to full category names     */
 /***********************************/
 func convertShortHand(shorthand string) string {
-    //define the categories values
-    categoriesJSONfileName := "categories.json"
+  //define the categories values
+  categoriesJSONfileName := "categories.json"
 
-    //read the categories json file
-    categoriesJSONbyte, err := ioutil.ReadFile(categoriesJSONfileName)
-    if err != nil {
-        log.Fatalf("err reading categories json file:  ", err)
-    }
+  //read the categories json file
+  categoriesJSONbyte, err := ioutil.ReadFile(categoriesJSONfileName)
+  if err != nil {
+  	log.Fatalf("err reading categories json file:  ", err)
+  }
 
-    //convert the []byte json data to string
-    categoriesJSON := string(categoriesJSONbyte)
+  //convert the []byte json data to string
+  categoriesJSON := string(categoriesJSONbyte)
 
-    //set the category to blank
-    category := ""
-    gjson.Parse(categoriesJSON).ForEach(func(_, v gjson.Result) bool {
-        found := false
-        v.Get("shorthands").ForEach(func(_, s gjson.Result) bool {
-            if s.String() == shorthand {
-                //set the index where it was found
-                category = v.Get("category").String()
-                //set found
-                found = true
-                //stop shorthand loop
-                return false
-            }
-            return true
-        })
-        if found {
-            //stop loop
-            return false
-        }
-        return true
-    })
-    //return the index of the shorthand
-    return category
+  //set the category to blank
+  category := ""
+  gjson.Parse(categoriesJSON).ForEach(func(_, v gjson.Result) bool {
+    found := false
+    v.Get("shorthands").ForEach(func(_, s gjson.Result) bool {
+      if s.String() == shorthand {
+	    	//set the index where it was found
+	      category = v.Get("category").String()
+	      //set found
+	      found = true
+	      //stop shorthand loop
+		    return false
+		  }
+		  return true
+		})
+	  if found {
+			//stop loop
+	  	return false
+		}
+    return true
+  })
+  //return the index of the shorthand
+  return category
 }
 
 
@@ -329,46 +332,46 @@ func convertShortHand(shorthand string) string {
 /* save notes locally  */
 /***********************/
 func saveNote(text string, category string, tags []string) {
-    //define the name of the notes json file
-    notesFileName := "notes.json"
+  //define the name of the notes json file
+  notesFileName := "notes.json"
     
-    //read the current notes json file
-    currentNotes, err := ioutil.ReadFile(notesFileName)
-    if err != nil {
-        log.Fatalf("err reading notes' json file:  ", err)
-    }
+  //read the current notes json file
+  currentNotes, err := ioutil.ReadFile(notesFileName)
+  if err != nil {
+  	log.Fatalf("err reading notes' json file:  ", err)
+  }
 
-    //create an array for the notes
-    var notesArray []noteStruct
-    //unmarshal the notes' json and put it into the array
-    err = json.Unmarshal(currentNotes, &notesArray)
-    if err != nil {
-        log.Fatalf("err attempting to unmarshal notes array", err)
-    }
+  //create an array for the notes
+  var notesArray []noteStruct
+  //unmarshal the notes' json and put it into the array
+  err = json.Unmarshal(currentNotes, &notesArray)
+  if err != nil {
+    log.Fatalf("err attempting to unmarshal notes array", err)
+  }
 
-    //define the new note
-    newNote := noteStruct{
-        NOTEtag: tags, //tags slice from input
-        NOTEcategory: category,
-        NOTEtext: text,
-    }
+  //define the new note
+  newNote := noteStruct{
+    NOTEtag: tags, //tags slice from input
+    NOTEcategory: category,
+  	NOTEtext: text,
+  }
 
-    //add the new note to the notes' array
-    notesArray = append(notesArray, newNote)
+  //add the new note to the notes' array
+  notesArray = append(notesArray, newNote)
     
-    //marshal the notes array to json
-    updatedNotesJSON, err := json.MarshalIndent(notesArray, "", "  ")
-    if err != nil {
-        log.Fatalf("err attempting to marshal notes array back into JSON:  ", err)
-    }
+  //marshal the notes array to json
+  updatedNotesJSON, err := json.MarshalIndent(notesArray, "", "  ")
+  if err != nil {
+  	log.Fatalf("err attempting to marshal notes array back into JSON:  ", err)
+  }
     
-    //write the updated notes' json to the notes' json file
-    err = ioutil.WriteFile(notesFileName, updatedNotesJSON, 0644)
-    if err != nil {
-        log.Fatalf("err attempting to write the updated notes' json to notes' file", err)
-    }
+  //write the updated notes' json to the notes' json file
+  err = ioutil.WriteFile(notesFileName, updatedNotesJSON, 0644)
+  if err != nil {
+  	log.Fatalf("err writing the notes' json to file", err)
+  }
 
-    fmt.Printf("wrote new note to json file\n")
+  fmt.Printf("wrote new note to json file\n")
 }
 
 
@@ -379,7 +382,7 @@ func noteHandler(w http.ResponseWriter, r *http.Request) {
 	//protocolScheme := r.Header.Get("X-Forwarded-Proto")
 	if r.Method != http.MethodPost {
 		fmt.Printf("only post allowed")
-        w.Write([]byte("only post allowed\n"))
+    w.Write([]byte("only post allowed\n"))
 		return
 	}
 	// Read body
@@ -397,18 +400,18 @@ func noteHandler(w http.ResponseWriter, r *http.Request) {
 	text := string(body)
 
 	//confirm receival of note
-    w.Write([]byte("note recieved:  " + text + "\n"))
+  w.Write([]byte("note recieved:  " + text + "\n"))
 	
 	//create temp var for category
 	var category string
 	var noteTag string
-    var timed bool
-    if r.Header.Get("time") != "" {
-        timed = true
-        w.Write([]byte("running as timed note"))
-    } else {
-        timed = false
-    }
+  var timed bool
+  if r.Header.Get("time") != "" {
+    timed = true
+  	w.Write([]byte("running as timed note"))
+  } else {
+  	timed = false
+  }
 
 	w.Write([]byte("  checking category:\n"))
 	//get the category
@@ -418,11 +421,11 @@ func noteHandler(w http.ResponseWriter, r *http.Request) {
 		category = convertShortHand(r.Header.Get("cat"))
 	} else if r.Header.Get("category") != "" {
 		category = convertShortHand(r.Header.Get("category"))
-    	} else {
+	} else {
 		//if no category specified...
 		category = "misc"
         
-        //respond...
+    //respond...
 
 		//make sure user knows that means it defaults to `misc`
 		w.Write([]byte("  no category specified; defaulting to `misc`\n"))
@@ -456,147 +459,115 @@ func noteHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("      noteTag: [your tag]"))
 	}
 
-    //convert the note tags string to a slice
-    noteTagsSlice := strings.Split(noteTagsRaw, ";")
+  //convert the note tags string to a slice
+  noteTagsSlice := strings.Split(noteTagsRaw, ";")
 
-    var noteTagsFormatted string
-    for _, value := range noteTagsSlice {
-        noteTagsFormatted += "`" + value + "` , "
-    }
+  var noteTagsFormatted string
+  for _, value := range noteTagsSlice {
+  	noteTagsFormatted += "`" + value + "` , "
+  }
 
 	if timed {
-        /*//get the requested time
-        noteTimeString := r.Header.Get("time")
+		w.Write([]byte("TODO: timed notes"))
+  } else {
+		//create temp var for the webhook url
+    var webHookURL string
         
-        //convert the requested time into a slice split by `;`
-        noteTimeSlice := strings.Split(noteTimeString, ";")
-        
-        //if no minute given, assume it's `00`
-        if len(noteTimeSlice) < 2 {
-            noteTimeSlice = append(noteTimeSlice, "")
-            noteTimeSlice[1] = strconv.Itoa(time.Now().Day())
-        }
-        if len(noteTimeSlice) < 3 {
-            noteTimeSlice = append(noteTimeSlice, "")
-            noteTimeSlice[2] = strconv.Itoa(int(time.Now().Month()))
-        }
-        if len(noteTimeSlice) < 4 {
-            noteTimeSlice = append(noteTimeSlice, "")
-            noteTimeSlice[3] = strconv.Itoa(int(time.Now().Weekday()))  
-        }
-
-
-        //respond with data
-        w.Write([]byte("    category:  " + category + "\n"))
-	    w.Write([]byte("    tag:       " + noteTag + "\n"))
-
-        //print header and body to console
-        fmt.Printf("  category:  %s\n", category)
-        fmt.Printf("  tag:       %s\n", noteTagsFormatted)
-        fmt.Printf("  content:   %s\n", text)
-
-        //save note to json file
-        saveNote(text, category, noteTagsSlice)
-
-        timeNote(text, noteTagsFormatted, category, noteTimeSlice)*/
-        w.Write([]byte("timed notes have been temporarily disabled because gocron sucks"))
-    } else {
-    	//create temp var for the webhook url
-        var webHookURL string
-        
-        //get the which webhook to use from lastUsedWebhook.txt 
-        whichWebhookByteArray, err := os.ReadFile("lastUsedWebhook.txt")
-        if err != nil {
-            log.Fatalf("err reading lastUsedWebhook.txt:  ", err)
-        }
-        
-        fmt.Printf(string(whichWebhookByteArray))
-
-        //converts []byte to string then integer
-        whichWebhook, err := strconv.Atoi(string(whichWebhookByteArray[0]))
-        if err != nil {
-            log.Fatalf("err converting []byte to string then integer for the getting which webhook to use:  ", err)
-        }
-        
-        //make sure that the value for the webhook used doesn't exceed the 3rd webhook
-        if whichWebhook == 2 {
-            whichWebhook = 0
-        } else {
-            //switch to next webhook
-            whichWebhook++
-        }
-
-        //keep track of current webhook
-        os.WriteFile("lastUsedWebhook.txt", []byte(strconv.Itoa(whichWebhook)), 0644)
-
-        //get the webhook from categories.json
-        webHookURL = getWebhook(category, whichWebhook)
-
-        if webHookURL == " " {
-            fmt.Printf("Invalid category")
-            w.Write([]byte("Invalid category"))
-        } else {
-            //respond with data
-        	w.Write([]byte("    category:  " + category + "\n"))
-	    	w.Write([]byte("    tag:       " + noteTag + "\n"))
-
-        	//print header and body to console
-        	fmt.Printf("  category:  %s\n", category)
-        	fmt.Printf("  tag:       %s\n", noteTagsFormatted)
-        	fmt.Printf("  content:   %s\n", text)
-        
-            //save note to json file
-            saveNote(text, category, noteTagsSlice)
-            fmt.Printf("webhook: %s\n", webHookURL)
-
-        	//send it to discod
-        	sendDiscord(text, webHookURL, noteTagsFormatted)
-
-        	//response
-        	w.WriteHeader(http.StatusOK)
-    	    _, _ = w.Write([]byte("noted\n"))
-        }
+    //get the which webhook to use from lastUsedWebhook.txt 
+    whichWebhookByteArray, err := os.ReadFile("lastUsedWebhook.txt")
+    if err != nil {
+      log.Fatalf("err reading lastUsedWebhook.txt:  ", err)
     }
+        
+    fmt.Printf(string(whichWebhookByteArray))
+
+    //converts []byte to string then integer
+    whichWebhook, err := strconv.Atoi(string(whichWebhookByteArray[0]))
+    if err != nil {
+    	log.Fatalf("err converting []byte to integer for webhook:  ", err)
+    }
+        
+    //make sure that the value for the webhook used doesn't exceed the 3rd webhook
+    if whichWebhook == 2 {
+    	whichWebhook = 0
+    } else {
+    	//switch to next webhook
+      whichWebhook++
+    }
+
+    //keep track of current webhook
+    os.WriteFile("lastUsedWebhook.txt", []byte(strconv.Itoa(whichWebhook)), 0644)
+
+    //get the webhook from categories.json
+    webHookURL = getWebhook(category, whichWebhook)
+
+    if webHookURL == " " {
+    	fmt.Printf("Invalid category")
+      w.Write([]byte("Invalid category"))
+    } else {  
+			//respond with data
+			w.Write([]byte("    category:  " + category + "\n"))
+			w.Write([]byte("    tag:       " + noteTag + "\n"))
+
+			//print header and body to console
+			fmt.Printf("  category:  %s\n", category)
+			fmt.Printf("  tag:       %s\n", noteTagsFormatted)
+			fmt.Printf("  content:   %s\n", text)
+      
+      //save note to json file
+      saveNote(text, category, noteTagsSlice)
+      fmt.Printf("webhook: %s\n", webHookURL)
+
+			//send it to discod
+			sendDiscord(text, webHookURL, noteTagsFormatted)
+
+			//response
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("noted\n"))
+    }
+  }
 }
 
 /*func init() {
-    var err error
-    scheduler, err = gocron.NewScheduler()
-    if err != nil {
-        log.Fatalf("failed to create scheduler: %v", err)
-    }
-    scheduler.Start()
+  var err error
+  scheduler, err = gocron.NewScheduler()
+  if err != nil {
+    log.Fatalf("failed to create scheduler: %v", err)
+  }
+  scheduler.Start()
 
-    //defer scheduler.Shutdown()
+  //defer scheduler.Shutdown()
 }*/
 
 /*******************/
 /*  main function  */
 /*******************/
 func main() {
-/*    var err error
-    scheduler, err = gocron.NewScheduler()
-    if err != nil {
-        log.Fatalf("failed to create scheduler: %v", err)
-    }
-    scheduler.Start()*/
+/*  var err error
+  scheduler, err = gocron.NewScheduler()
+  if err != nil {
+    log.Fatalf("failed to create scheduler: %v", err)
+  }
+  scheduler.Start()*/
 	//handle post requests for notes
 	http.HandleFunc("/post", noteHandler)
 
-    //handle get requests for notes
-    http.HandleFunc("/get", getNoteHandler)
+  //handle get requests for notes
+  http.HandleFunc("/get", getNoteHandler)
 
-    //handle creating categories
-    http.HandleFunc("/createCategory", createCatHandler)
+  //handle creating categories
+  http.HandleFunc("/createCategory", createCatHandler)
 
-    //handle all other pages
-    http.HandleFunc("/", webPageHandler)
+  //handle all other pages
+  http.HandleFunc("/", webPageHandler)
 
-    //specify the port to listen on
+  //specify the port to listen on
 	port := "6502"
-    //print that it's working to console
+
+  //print that it's working to console
 	log.Printf("Listening on http://localhost:%s (POST requests)\n", port)
-    if err := http.ListenAndServe(":"+port, nil); err != nil {
+
+  if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatalf("server failed: %v", err)
 	}
 
@@ -609,7 +580,7 @@ func main() {
 func sendDiscord(text string, webHookURL string, noteTag string) {
 	//payload struct
 	payload := map[string]interface{}{
-        "content": "**" + noteTag[:len(noteTag)-2] + " :**\n      " + text + "",
+    "content": "**" + noteTag[:len(noteTag)-2] + " :**\n      " + text + "",
 	}
 
 	//convert payload struct to json
@@ -622,10 +593,10 @@ func sendDiscord(text string, webHookURL string, noteTag string) {
 	//create the request
 	resp, err := http.Post(webHookURL, "application/json", bytes.NewBuffer(data))
 	if err != nil {
-        fmt.Println("\nsendDiscord()\n  error sending request:\n", err)
-        fmt.Println("\n  webhook:\n", webHookURL)
-        fmt.Println("\n  text:\n", text)
-        fmt.Println("\n  noteTag:\n", noteTag)
+    fmt.Println("\nsendDiscord()\n  error sending request:\n", err)
+    fmt.Println("\n  webhook:\n", webHookURL)
+    fmt.Println("\n  text:\n", text)
+    fmt.Println("\n  noteTag:\n", noteTag)
 		os.Exit(1)
 	}
 	defer resp.Body.Close()
