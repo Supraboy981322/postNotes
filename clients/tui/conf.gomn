@@ -1,0 +1,4 @@
+["server"] := |
+  ["address"] := "your server address here"
+|
+["timeout"] := 10
