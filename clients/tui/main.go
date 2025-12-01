@@ -1,14 +1,14 @@
 package main
 
 import (
-//	"io"
+	"io"
 	"os"
 	"fmt"
-//	"time"
+	"time"
 	"errors"
 	"slices"
 	"strings"
-//	"net/http"
+	"net/http"
 //	"path/filepath"
 	"github.com/Supraboy981322/gomn"
 )
@@ -41,7 +41,7 @@ func init() {
 		erorF("parsing server config", err)
 	}
 
-	if timeout, ok := conf["timeout"].(int); !ok {
+	if timeout, ok = conf["timeout"].(int); !ok {
 		err := errors.New("invalid timeout")
 		erorF("parsing server config", err)
 	}
@@ -81,7 +81,7 @@ func init() {
 
 func main() {
 	client := &http.Client{
-		Timeout: time.Second*timeout
+		Timeout: time.Second*time.Duration(timeout),
 	}
 
 	req, err := http.NewRequest(
@@ -105,7 +105,5 @@ func main() {
 		erorF("reading response", err)
 	}
 
-	fmt.Printf("cat:  %s\n", cat)
-	fmt.Printf("tag:  %s\n", tag)
-	fmt.Printf("data:  %s\n", data)
+	fmt.Println(string(respBody))
 }
